@@ -55,7 +55,6 @@ export class Player extends Agent {
       this.updateAnimation();
     } catch (error) {
       console.warn("Could not load animation data:", error);
-      this.createFallbackSprite();
     }
   }
 
@@ -98,19 +97,6 @@ export class Player extends Agent {
     this.loadAnimationData();
   }
 
-  createFallbackSprite() {
-    const texture = this.spritesheet.getSprite(0, 0, 64, 64);
-    if (texture) {
-      this.sprite = new PIXI.Sprite(texture);
-    } else {
-      this.sprite = this.spritesheet.createFallbackCircle(32);
-    }
-    this.updateSpritePosition();
-    if (!this.container.children.includes(this.sprite)) {
-      this.container.addChild(this.sprite);
-    }
-  }
-
   updateSpritePosition() {
     if (this.sprite) {
       this.sprite.x = this.x;
@@ -118,7 +104,7 @@ export class Player extends Agent {
     }
   }
 
-  update(deltaTime) {
+  update() {
     if (this.inputHandler) {
       const movement = this.inputHandler.getMovementVector();
 

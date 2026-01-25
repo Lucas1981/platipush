@@ -1,100 +1,80 @@
 import { Enemy } from "./Enemy.js";
-import {
-  GameState,
-  ENEMY_SPAWN_INTERVAL,
-  INITIAL_TIMER_MS,
-} from "./constants.js";
+import { GameState as GameStateEnum, ENEMY_SPAWN_INTERVAL, INITIAL_TIMER_MS } from "./constants.js";
 import { formatTime, isPlayerInsideSafeCircle } from "./helper-functions.js";
 
-export function mainLoop({
-  deltaTime,
-  currentTime,
-  agents,
-  player,
-  spritesheet,
-  app,
-  gameContainer,
-  timerStartTime,
-  remainingTime,
-  lastEnemySpawnTime,
-  timerText,
-}) {
-  let updatedAgents = [...agents];
-  let updatedRemainingTime = remainingTime;
-  let updatedLastEnemySpawnTime = lastEnemySpawnTime;
-  let stateChange = null;
+export function mainLoop({ deltaTime, currentTime, gameState, clock }) {
+  const timerElapsed = currentTime - gameState.timerStartTime;
+  gameState.remainingTime = INITIAL_TIMER_MS - timerElapsed;
 
-  const elapsed = currentTime - timerStartTime;
-  updatedRemainingTime = INITIAL_TIMER_MS - elapsed;
-
-  if (timerText) {
-    timerText.text = `Time to last: ${formatTime(updatedRemainingTime)}`;
+  if (gameState.timerText) {
+    gameState.timerText.text = `Time to last: ${formatTime(gameState.remainingTime)}`;
   }
 
-  if (updatedRemainingTime <= 0) {
+  let stateChange = null;
+
+  if (gameState.remainingTime <= 0) {
     stateChange = {
-      newState: GameState.WON,
+      newState: GameStateEnum.WON,
       resetTimer: true,
     };
-    if (timerText) {
-      timerText.text = `Time to last: ${formatTime(0)}`;
+    if (gameState.timerText) {
+      gameState.timerText.text = `Time to last: ${formatTime(0)}`;
     }
   }
 
-  if (currentTime - updatedLastEnemySpawnTime >= ENEMY_SPAWN_INTERVAL) {
-    const enemy = new Enemy(spritesheet, app.screen.width, app.screen.height);
-    updatedAgents.push(enemy);
-    enemy.draw(gameContainer);
-    updatedLastEnemySpawnTime = currentTime;
+  if (currentTime - gameState.lastEnemySpawnTime >= ENEMY_SPAWN_INTERVAL) {
+    const enemy = new Enemy(
+      gameState.spritesheet,
+      gameState.app.screen.width,
+      gameState.app.screen.height,
+    );
+    gameState.agents.push(enemy);
+    enemy.draw(gameState.gameContainer);
+    gameState.lastEnemySpawnTime = currentTime;
   }
 
-  for (let i = 0; i < updatedAgents.length; i++) {
-    updatedAgents[i].update(deltaTime);
+  for (let i = 0; i < gameState.agents.length; i++) {
+    gameState.agents[i].update(deltaTime);
   }
 
-  if (!isPlayerInsideSafeCircle(player)) {
+  if (!isPlayerInsideSafeCircle(gameState.player)) {
     stateChange = {
-      newState: GameState.DEAD,
+      newState: GameStateEnum.DEAD,
       resetTimer: true,
     };
   }
 
-  if (player) {
-    for (let i = 0; i < updatedAgents.length; i++) {
-      const otherAgent = updatedAgents[i];
+  if (gameState.player) {
+    for (let i = 0; i < gameState.agents.length; i++) {
+      const otherAgent = gameState.agents[i];
 
-      if (otherAgent === player) {
+      if (otherAgent === gameState.player) {
         continue;
       }
 
-      if (player.intersects(otherAgent)) {
+      if (gameState.player.intersects(otherAgent)) {
         if (otherAgent instanceof Enemy) {
           const enemyDirection = otherAgent.getDirection();
 
           const enemyHitboxLeft = otherAgent.x + otherAgent.hitbox.x;
           const enemyHitboxRight = enemyHitboxLeft + otherAgent.hitbox.width;
 
-          const playerHitboxLeft = player.x + player.hitbox.x;
-          const playerHitboxRight = playerHitboxLeft + player.hitbox.width;
-
           if (enemyDirection === -1) {
-            player.x = enemyHitboxLeft - player.hitbox.x - player.hitbox.width;
+            gameState.player.x =
+              enemyHitboxLeft -
+              gameState.player.hitbox.x -
+              gameState.player.hitbox.width;
           } else {
-            player.x = enemyHitboxRight - player.hitbox.x;
+            gameState.player.x = enemyHitboxRight - gameState.player.hitbox.x;
           }
 
-          player.updateSpritePosition();
+          gameState.player.updateSpritePosition();
         }
       }
     }
   }
 
-  updatedAgents = updatedAgents.filter((agent) => agent.getIsActive());
+  gameState.agents = gameState.agents.filter((agent) => agent.getIsActive());
 
-  return {
-    agents: updatedAgents,
-    remainingTime: updatedRemainingTime,
-    lastEnemySpawnTime: updatedLastEnemySpawnTime,
-    stateChange,
-  };
+  return { stateChange };
 }
