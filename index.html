@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PixiJS Game</title>
+    <style>
+      @font-face {
+        font-family: "PressStart2P";
+        src: url("./src/assets/PressStart2P-Regular.ttf") format("truetype");
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+      }
+
+      canvas {
+        border: 1px solid #333;
+      }
+
+      #game-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      h1 {
+        font-family: "PressStart2P", monospace;
+        color: white;
+        font-size: 24px;
+        margin: 10px 0 5px 0;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game-container">
+      <h1>Platipush</h1>
+      <canvas id="game-canvas"></canvas>
+    </div>
+
+    <script type="module" src="src/index.js"></script>
+  </body>
+</html>
