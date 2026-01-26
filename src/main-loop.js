@@ -68,11 +68,7 @@ function handleCollisions(gameState) {
   gameState.player.handleHit(hasCollision);
 }
 
-export function mainLoop({ currentTime, gameState }) {
-  let stateChange = updateTimer(gameState, currentTime);
-
-  spawnEnemy(gameState, currentTime);
-
+function updateAgents(gameState, currentTime) {
   for (let i = 0; i < gameState.agents.length; i++) {
     const agent = gameState.agents[i];
     if (agent === gameState.player) {
@@ -81,6 +77,14 @@ export function mainLoop({ currentTime, gameState }) {
       agent.update();
     }
   }
+}
+
+export function mainLoop({ currentTime, gameState }) {
+  let stateChange = updateTimer(gameState, currentTime);
+
+  spawnEnemy(gameState, currentTime);
+  updateAgents(gameState, currentTime);
+  handleCollisions(gameState);
 
   if (!isPlayerInsideSafeCircle(gameState.player)) {
     stateChange = {
@@ -88,8 +92,6 @@ export function mainLoop({ currentTime, gameState }) {
       resetTimer: true,
     };
   }
-
-  handleCollisions(gameState);
 
   gameState.agents = gameState.agents.filter((agent) => agent.getIsActive());
 

@@ -14,7 +14,7 @@ export class Agent {
     throw new Error("update() method must be implemented by subclasses");
   }
 
-  draw(container) {
+  draw() {
     throw new Error("draw() method must be implemented by subclasses");
   }
 

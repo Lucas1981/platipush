@@ -140,7 +140,7 @@ function setupVisibilityHandlers(gameState) {
   document.addEventListener("visibilitychange", handleVisibilityChange);
 }
 
-function gameLoop(deltaTime) {
+function gameLoop() {
   if (gameState.isPaused) {
     return;
   }
