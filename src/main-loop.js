@@ -79,6 +79,14 @@ function updateAgents(gameState, currentTime) {
   }
 }
 
+function removeInactiveAgents(gameState) {
+  for (let i = gameState.agents.length - 1; i >= 0; i--) {
+    if (!gameState.agents[i].getIsActive()) {
+      gameState.agents.splice(i, 1);
+    }
+  }
+}
+
 export function mainLoop({ currentTime, gameState }) {
   let stateChange = updateTimer(gameState, currentTime);
 
@@ -93,7 +101,7 @@ export function mainLoop({ currentTime, gameState }) {
     };
   }
 
-  gameState.agents = gameState.agents.filter((agent) => agent.getIsActive());
+  removeInactiveAgents(gameState);
 
   return { stateChange };
 }

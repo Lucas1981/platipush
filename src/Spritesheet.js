@@ -4,6 +4,7 @@ export class Spritesheet {
   constructor() {
     this.texture = null;
     this.loaded = false;
+    this.textureCache = new Map();
   }
 
   async load(path) {
@@ -17,17 +18,28 @@ export class Spritesheet {
     }
   }
 
+  getCacheKey(x, y, width, height) {
+    return `${x},${y},${width},${height}`;
+  }
+
   getSprite(x, y, width, height) {
     if (!this.loaded || !this.texture) {
       return null;
     }
 
-    // Create a texture from the specific region of the spritesheet
+    const cacheKey = this.getCacheKey(x, y, width, height);
+    if (this.textureCache.has(cacheKey)) {
+      return this.textureCache.get(cacheKey);
+    }
+
     const frame = new PIXI.Rectangle(x, y, width, height);
-    return new PIXI.Texture({
+    const texture = new PIXI.Texture({
       source: this.texture.source,
       frame: frame,
     });
+
+    this.textureCache.set(cacheKey, texture);
+    return texture;
   }
 
   createFallbackCircle(radius = 16) {
