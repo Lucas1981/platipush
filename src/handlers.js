@@ -43,6 +43,7 @@ export function handleWonState(gameState) {
     resetGameState(gameState, currentTime);
     gameState.state = GameStateEnum.TITLE_SCREEN;
     gameState.gameStateStartTime = currentTime;
+    gameState.inputHandler.clearKey("Enter");
     if (gameState.winText) {
       gameState.winText.visible = false;
     }

@@ -43,6 +43,12 @@ export class InputHandler {
     return { x, y };
   }
 
+  clearKey(keyCode) {
+    if (keyCode in this.keys) {
+      this.keys[keyCode] = false;
+    }
+  }
+
   destroy() {
     window.removeEventListener("keydown", this.handleKeyDown);
     window.removeEventListener("keyup", this.handleKeyUp);
