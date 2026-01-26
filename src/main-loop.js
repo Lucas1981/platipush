@@ -74,7 +74,12 @@ export function mainLoop({ deltaTime, currentTime, gameState }) {
   spawnEnemy(gameState, currentTime);
 
   for (let i = 0; i < gameState.agents.length; i++) {
-    gameState.agents[i].update(deltaTime);
+    const agent = gameState.agents[i];
+    if (agent.update.length === 2) {
+      agent.update(deltaTime, currentTime);
+    } else {
+      agent.update(deltaTime);
+    }
   }
 
   if (!isPlayerInsideSafeCircle(gameState.player)) {

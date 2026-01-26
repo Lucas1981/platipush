@@ -5,6 +5,10 @@ export class InputHandler {
       ArrowDown: false,
       ArrowLeft: false,
       ArrowRight: false,
+      KeyW: false,
+      KeyA: false,
+      KeyS: false,
+      KeyD: false,
       Enter: false,
     };
     this.handleKeyDown = (event) => {
@@ -35,10 +39,10 @@ export class InputHandler {
     let x = 0;
     let y = 0;
 
-    if (this.isKeyPressed("ArrowLeft")) x -= 1;
-    if (this.isKeyPressed("ArrowRight")) x += 1;
-    if (this.isKeyPressed("ArrowUp")) y -= 1;
-    if (this.isKeyPressed("ArrowDown")) y += 1;
+    if (this.isKeyPressed("ArrowLeft") || this.isKeyPressed("KeyA")) x -= 1;
+    if (this.isKeyPressed("ArrowRight") || this.isKeyPressed("KeyD")) x += 1;
+    if (this.isKeyPressed("ArrowUp") || this.isKeyPressed("KeyW")) y -= 1;
+    if (this.isKeyPressed("ArrowDown") || this.isKeyPressed("KeyS")) y += 1;
 
     return { x, y };
   }

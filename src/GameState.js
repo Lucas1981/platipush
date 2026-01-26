@@ -30,6 +30,7 @@ export class GameState {
     this._sounds = null;
     this._isPaused = false;
     this._pauseStartTime = 0;
+    this._lastFrameTime = 0;
   }
 
   get state() {
@@ -218,5 +219,13 @@ export class GameState {
 
   set pauseStartTime(value) {
     this._pauseStartTime = value;
+  }
+
+  get lastFrameTime() {
+    return this._lastFrameTime;
+  }
+
+  set lastFrameTime(value) {
+    this._lastFrameTime = value;
   }
 }

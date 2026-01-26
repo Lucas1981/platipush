@@ -118,14 +118,16 @@ async function main() {
 
 function setupVisibilityHandlers(gameState) {
   const handleVisibilityChange = () => {
+    const currentTime = gameState.lastFrameTime || Date.now();
     if (document.hidden) {
       if (!gameState.isPaused) {
         gameState.isPaused = true;
-        gameState.pauseStartTime = Date.now();
+        gameState.pauseStartTime = currentTime;
       }
     } else {
       if (gameState.isPaused) {
-        const pauseDuration = Date.now() - gameState.pauseStartTime;
+        const resumeTime = Date.now();
+        const pauseDuration = resumeTime - gameState.pauseStartTime;
         gameState.timerStartTime += pauseDuration;
         gameState.gameStateStartTime += pauseDuration;
         gameState.lastEnemySpawnTime += pauseDuration;
@@ -144,10 +146,11 @@ function gameLoop(deltaTime) {
   }
 
   const currentTime = Date.now();
+  gameState.lastFrameTime = currentTime;
 
   switch (gameState.state) {
     case GameStateEnum.TITLE_SCREEN:
-      handleTitleScreenState(gameState);
+      handleTitleScreenState(gameState, currentTime);
       break;
 
     case GameStateEnum.READY:
@@ -159,7 +162,7 @@ function gameLoop(deltaTime) {
       break;
 
     case GameStateEnum.WON:
-      handleWonState(gameState);
+      handleWonState(gameState, currentTime);
       break;
 
     case GameStateEnum.RESET:

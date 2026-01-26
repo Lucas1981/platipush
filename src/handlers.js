@@ -40,9 +40,8 @@ export function handleDeadState(gameState, currentTime) {
   handleEndState(gameState, currentTime, "deathText");
 }
 
-export function handleWonState(gameState) {
+export function handleWonState(gameState, currentTime) {
   if (gameState.inputHandler.isKeyPressed("Enter")) {
-    const currentTime = Date.now();
     resetGameState(gameState, currentTime);
     gameState.state = GameStateEnum.TITLE_SCREEN;
     gameState.gameStateStartTime = currentTime;
@@ -62,9 +61,8 @@ export function handleWonState(gameState) {
   }
 }
 
-export function handleTitleScreenState(gameState) {
+export function handleTitleScreenState(gameState, currentTime) {
   if (gameState.inputHandler.isKeyPressed("Enter")) {
-    const currentTime = Date.now();
     resetGameState(gameState, currentTime);
     gameState.state = GameStateEnum.READY;
     gameState.gameStateStartTime = currentTime;
@@ -96,7 +94,7 @@ export function handleReadyState(gameState, currentTime) {
   }
 }
 
-function resetGameplayState(gameState) {
+function resetGameplayState(gameState, currentTime) {
   gameState.agents = clearEnemies(gameState.agents);
   resetPlayer(
     gameState.player,
@@ -104,13 +102,13 @@ function resetGameplayState(gameState) {
     gameState.playerInitialY,
   );
   if (gameState.player) {
-    gameState.player.resetState();
+    gameState.player.resetState(currentTime);
   }
   gameState.hitboxGraphicsMap.clear();
 }
 
 function resetGameState(gameState, currentTime) {
-  resetGameplayState(gameState);
+  resetGameplayState(gameState, currentTime);
   gameState.lives = INITIAL_LIVES;
   gameState.remainingTime = INITIAL_TIMER_MS;
   gameState.timerStartTime = currentTime;

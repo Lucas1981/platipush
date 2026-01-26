@@ -24,7 +24,7 @@ export class Player extends Agent {
     this.state = "STANDING";
     this.currentAnimation = null;
     this.currentFrameIndex = 0;
-    this.lastAnimationUpdate = Date.now();
+    this.lastAnimationUpdate = 0;
     this.animationSpeed = 200;
 
     this.frames = null;
@@ -72,7 +72,7 @@ export class Player extends Agent {
     return baseIndex[this.direction] + offset;
   }
 
-  updateAnimation() {
+  updateAnimation(currentTime) {
     if (!this.animationTextures || this.animationTextures.length === 0) {
       return;
     }
@@ -83,7 +83,11 @@ export class Player extends Agent {
     if (this.currentAnimation !== newAnimation) {
       this.currentAnimation = newAnimation;
       this.currentFrameIndex = 0;
-      this.lastAnimationUpdate = Date.now();
+      if (currentTime !== undefined) {
+        this.lastAnimationUpdate = currentTime;
+      } else if (this.lastAnimationUpdate === 0) {
+        this.lastAnimationUpdate = Date.now();
+      }
 
       if (this.sprite && newAnimation.length > 0) {
         this.sprite.texture = newAnimation[0];
@@ -106,7 +110,7 @@ export class Player extends Agent {
     }
   }
 
-  update() {
+  update(deltaTime, currentTime) {
     if (this.inputHandler) {
       const movement = this.inputHandler.getMovementVector();
 
@@ -123,10 +127,9 @@ export class Player extends Agent {
       const isMoving = movement.x !== 0 || movement.y !== 0;
       this.state = isMoving ? "WALKING" : "STANDING";
 
-      this.updateAnimation();
+      this.updateAnimation(currentTime);
 
       if (this.currentAnimation && this.currentAnimation.length > 0) {
-        const currentTime = Date.now();
         if (currentTime - this.lastAnimationUpdate >= this.animationSpeed) {
           this.lastAnimationUpdate = currentTime;
           this.currentFrameIndex =
@@ -175,10 +178,10 @@ export class Player extends Agent {
     }
   }
 
-  resetState() {
+  resetState(currentTime) {
     this.direction = "DOWN";
     this.state = "STANDING";
-    this.updateAnimation();
+    this.updateAnimation(currentTime);
   }
 
   destroy() {
