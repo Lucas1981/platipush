@@ -5,7 +5,15 @@ import framesData from "./assets/frames.json";
 import animationsData from "./assets/animations.json";
 
 export class Player extends Agent {
-  constructor(x, y, spritesheet, inputHandler, screenWidth, screenHeight, sounds) {
+  constructor(
+    x,
+    y,
+    spritesheet,
+    inputHandler,
+    screenWidth,
+    screenHeight,
+    sounds,
+  ) {
     super(x, y);
     this.spritesheet = spritesheet;
     this.inputHandler = inputHandler;
@@ -110,7 +118,7 @@ export class Player extends Agent {
     }
   }
 
-  update(deltaTime, currentTime) {
+  update(currentTime) {
     if (this.inputHandler) {
       const movement = this.inputHandler.getMovementVector();
 

@@ -174,7 +174,7 @@ function gameLoop(deltaTime) {
       break;
 
     case GameStateEnum.RUNNING:
-      handleRunningState(gameState, currentTime, deltaTime);
+      handleRunningState(gameState, currentTime);
       break;
   }
 

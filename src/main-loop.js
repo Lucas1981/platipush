@@ -68,17 +68,17 @@ function handleCollisions(gameState) {
   gameState.player.handleHit(hasCollision);
 }
 
-export function mainLoop({ deltaTime, currentTime, gameState }) {
+export function mainLoop({ currentTime, gameState }) {
   let stateChange = updateTimer(gameState, currentTime);
 
   spawnEnemy(gameState, currentTime);
 
   for (let i = 0; i < gameState.agents.length; i++) {
     const agent = gameState.agents[i];
-    if (agent.update.length === 2) {
-      agent.update(deltaTime, currentTime);
+    if (agent === gameState.player) {
+      agent.update(currentTime);
     } else {
-      agent.update(deltaTime);
+      agent.update();
     }
   }
 

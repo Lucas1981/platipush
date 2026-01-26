@@ -66,7 +66,7 @@ export class Enemy extends Agent {
     }
   }
 
-  update(deltaTime) {
+  update() {
     if (!this.getIsActive()) {
       return;
     }

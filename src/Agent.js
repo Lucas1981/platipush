@@ -10,7 +10,7 @@ export class Agent {
     return this.isActive;
   }
 
-  update(deltaTime) {
+  update() {
     throw new Error("update() method must be implemented by subclasses");
   }
 
