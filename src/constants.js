@@ -1,13 +1,19 @@
 export const GameState = {
+  TITLE_SCREEN: "TITLE_SCREEN",
+  READY: "READY",
   RUNNING: "RUNNING",
   DEAD: "DEAD",
   RESET: "RESET",
   WON: "WON",
+  GAME_OVER: "GAME_OVER",
 };
 
 export const ENEMY_SPAWN_INTERVAL = 100;
-export const DEAD_STATE_DURATION = 500;
+export const DEAD_STATE_DURATION = 800;
+export const READY_STATE_DURATION = 1600;
+export const GAME_OVER_STATE_DURATION = 1600;
 export const INITIAL_TIMER_MS = 30000;
+export const INITIAL_LIVES = 3;
 
 export const SCREEN_WIDTH = 800;
 export const SCREEN_HEIGHT = 600;

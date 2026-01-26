@@ -1,27 +1,27 @@
 import { Enemy } from "./Enemy.js";
-import { GameState as GameStateEnum, ENEMY_SPAWN_INTERVAL, INITIAL_TIMER_MS } from "./constants.js";
+import {
+  GameState as GameStateEnum,
+  ENEMY_SPAWN_INTERVAL,
+  INITIAL_TIMER_MS,
+} from "./constants.js";
 import { formatTime, isPlayerInsideSafeCircle } from "./helper-functions.js";
 
-export function mainLoop({ deltaTime, currentTime, gameState, clock }) {
+function updateTimer(gameState, currentTime) {
   const timerElapsed = currentTime - gameState.timerStartTime;
   gameState.remainingTime = INITIAL_TIMER_MS - timerElapsed;
-
-  if (gameState.timerText) {
-    gameState.timerText.text = `Time to last: ${formatTime(gameState.remainingTime)}`;
-  }
-
-  let stateChange = null;
+  gameState.timerText.text = `Time to last: ${formatTime(gameState.remainingTime)}`;
 
   if (gameState.remainingTime <= 0) {
-    stateChange = {
+    gameState.timerText.text = `Time to last: ${formatTime(0)}`;
+    return {
       newState: GameStateEnum.WON,
       resetTimer: true,
     };
-    if (gameState.timerText) {
-      gameState.timerText.text = `Time to last: ${formatTime(0)}`;
-    }
   }
+  return null;
+}
 
+function spawnEnemy(gameState, currentTime) {
   if (currentTime - gameState.lastEnemySpawnTime >= ENEMY_SPAWN_INTERVAL) {
     const enemy = new Enemy(
       gameState.spritesheet,
@@ -32,6 +32,41 @@ export function mainLoop({ deltaTime, currentTime, gameState, clock }) {
     enemy.draw(gameState.gameContainer);
     gameState.lastEnemySpawnTime = currentTime;
   }
+}
+
+function handleCollisions(gameState) {
+  for (let i = 0; i < gameState.agents.length; i++) {
+    const otherAgent = gameState.agents[i];
+
+    if (otherAgent === gameState.player) {
+      continue;
+    }
+
+    if (gameState.player.intersects(otherAgent)) {
+      if (otherAgent instanceof Enemy) {
+        const enemyDirection = otherAgent.getDirection();
+        const enemyHitboxLeft = otherAgent.x + otherAgent.hitbox.x;
+        const enemyHitboxRight = enemyHitboxLeft + otherAgent.hitbox.width;
+
+        if (enemyDirection === -1) {
+          gameState.player.x =
+            enemyHitboxLeft -
+            gameState.player.hitbox.x -
+            gameState.player.hitbox.width;
+        } else {
+          gameState.player.x = enemyHitboxRight - gameState.player.hitbox.x;
+        }
+
+        gameState.player.updateSpritePosition();
+      }
+    }
+  }
+}
+
+export function mainLoop({ deltaTime, currentTime, gameState }) {
+  let stateChange = updateTimer(gameState, currentTime);
+
+  spawnEnemy(gameState, currentTime);
 
   for (let i = 0; i < gameState.agents.length; i++) {
     gameState.agents[i].update(deltaTime);
@@ -44,35 +79,7 @@ export function mainLoop({ deltaTime, currentTime, gameState, clock }) {
     };
   }
 
-  if (gameState.player) {
-    for (let i = 0; i < gameState.agents.length; i++) {
-      const otherAgent = gameState.agents[i];
-
-      if (otherAgent === gameState.player) {
-        continue;
-      }
-
-      if (gameState.player.intersects(otherAgent)) {
-        if (otherAgent instanceof Enemy) {
-          const enemyDirection = otherAgent.getDirection();
-
-          const enemyHitboxLeft = otherAgent.x + otherAgent.hitbox.x;
-          const enemyHitboxRight = enemyHitboxLeft + otherAgent.hitbox.width;
-
-          if (enemyDirection === -1) {
-            gameState.player.x =
-              enemyHitboxLeft -
-              gameState.player.hitbox.x -
-              gameState.player.hitbox.width;
-          } else {
-            gameState.player.x = enemyHitboxRight - gameState.player.hitbox.x;
-          }
-
-          gameState.player.updateSpritePosition();
-        }
-      }
-    }
-  }
+  handleCollisions(gameState);
 
   gameState.agents = gameState.agents.filter((agent) => agent.getIsActive());
 

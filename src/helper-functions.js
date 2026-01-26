@@ -40,15 +40,12 @@ export function isPlayerInsideSafeCircle(player) {
 }
 
 export function clearEnemies(agents) {
-  const updatedAgents = [];
   for (let i = 0; i < agents.length; i++) {
     if (agents[i] instanceof Enemy) {
       agents[i].destroy();
-    } else {
-      updatedAgents.push(agents[i]);
     }
   }
-  return updatedAgents;
+  return agents.filter((agent) => !(agent instanceof Enemy));
 }
 
 export function resetPlayer(player, initialX, initialY) {

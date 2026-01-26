@@ -12,24 +12,21 @@ import {
 import { loadFont } from "./helper-functions.js";
 import { createStageGraphics } from "./stage-graphics.js";
 import {
+  handleTitleScreenState,
+  handleReadyState,
   handleDeadState,
   handleWonState,
   handleResetState,
   handleRunningState,
+  handleGameOverState,
 } from "./handlers.js";
 import { GameState } from "./GameState.js";
-import { Clock } from "./Clock.js";
 
 let app;
-let inputHandler;
-let backgroundGraphics = null;
-
 let gameState = null;
-let clock = null;
 
 async function main() {
   gameState = new GameState();
-  clock = new Clock();
 
   app = new PIXI.Application();
   await app.init({
@@ -43,7 +40,8 @@ async function main() {
 
   app.ticker.maxFPS = 60;
 
-  inputHandler = new InputHandler();
+  const inputHandler = new InputHandler();
+  gameState.inputHandler = inputHandler;
 
   const spritesheet = new Spritesheet();
   await spritesheet.load(spritesheetUrl);
@@ -51,12 +49,20 @@ async function main() {
 
   await loadFont();
 
-  const stageElements = await createStageGraphics(app, gameState.remainingTime);
+  const stageElements = await createStageGraphics(
+    app,
+    gameState.remainingTime,
+    gameState.lives,
+  );
   gameState.gameContainer = stageElements.gameContainer;
-  backgroundGraphics = stageElements.backgroundSprite;
   gameState.timerText = stageElements.timerText;
   gameState.deathText = stageElements.deathText;
   gameState.winText = stageElements.winText;
+  gameState.titleScreenSprite = stageElements.titleScreenSprite;
+  gameState.readyText = stageElements.readyText;
+  gameState.gameOverText = stageElements.gameOverText;
+
+  gameState.gameContainer.visible = false;
 
   gameState.playerInitialX = app.screen.width / 2;
   gameState.playerInitialY = app.screen.height / 2;
@@ -65,7 +71,7 @@ async function main() {
     gameState.playerInitialX,
     gameState.playerInitialY,
     spritesheet,
-    inputHandler,
+    gameState.inputHandler,
     app.screen.width,
     app.screen.height,
   );
@@ -75,11 +81,10 @@ async function main() {
 
   player.draw(gameState.gameContainer);
 
-  gameState.lastEnemySpawnTime = clock.getCurrentTime();
-  gameState.state = GameStateEnum.RUNNING;
-  gameState.gameStateStartTime = clock.getCurrentTime();
-  gameState.timerStartTime = clock.getCurrentTime();
-  clock.start();
+  const currentTime = Date.now();
+  gameState.lastEnemySpawnTime = currentTime;
+  gameState.gameStateStartTime = currentTime;
+  gameState.timerStartTime = currentTime;
 
   app.ticker.add((ticker) => {
     gameLoop(ticker.deltaTime);
@@ -89,21 +94,35 @@ async function main() {
 }
 
 function gameLoop(deltaTime) {
+  const currentTime = Date.now();
+
   switch (gameState.state) {
+    case GameStateEnum.TITLE_SCREEN:
+      handleTitleScreenState(gameState);
+      break;
+
+    case GameStateEnum.READY:
+      handleReadyState(gameState, currentTime);
+      break;
+
     case GameStateEnum.DEAD:
-      handleDeadState(gameState, clock);
+      handleDeadState(gameState, currentTime);
       break;
 
     case GameStateEnum.WON:
-      handleWonState(gameState, clock);
+      handleWonState(gameState);
       break;
 
     case GameStateEnum.RESET:
-      handleResetState(gameState, clock);
+      handleResetState(gameState, currentTime);
+      break;
+
+    case GameStateEnum.GAME_OVER:
+      handleGameOverState(gameState, currentTime);
       break;
 
     case GameStateEnum.RUNNING:
-      handleRunningState(gameState, clock, deltaTime);
+      handleRunningState(gameState, currentTime, deltaTime);
       break;
   }
 }

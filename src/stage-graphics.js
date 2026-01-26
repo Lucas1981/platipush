@@ -13,6 +13,7 @@ import {
 } from "./constants.js";
 import { formatTime } from "./helper-functions.js";
 import islandUrl from "./assets/island.jpeg?url";
+import titleScreenUrl from "./assets/title-screen.png?url";
 
 async function createBackgroundSprite(app, gameContainer) {
   const backgroundTexture = await PIXI.Assets.load(islandUrl);
@@ -82,12 +83,13 @@ function createDeathText(uiContainer, app) {
 
 function createWinText(uiContainer, app) {
   const winText = new PIXI.Text({
-    text: "You won!",
+    text: "You won!\nPush enter to return",
     style: {
       fontFamily: FONT_FAMILY,
       fontSize: MESSAGE_FONT_SIZE,
       fill: COLORS.TEXT,
       align: "center",
+      lineHeight: MESSAGE_FONT_SIZE * 1.5,
     },
   });
   winText.anchor.set(0.5);
@@ -98,7 +100,60 @@ function createWinText(uiContainer, app) {
   return winText;
 }
 
-export async function createStageGraphics(app, remainingTime) {
+function createGameOverText(uiContainer, app) {
+  const gameOverText = new PIXI.Text({
+    text: "Game Over",
+    style: {
+      fontFamily: FONT_FAMILY,
+      fontSize: MESSAGE_FONT_SIZE,
+      fill: COLORS.TEXT,
+      align: "center",
+    },
+  });
+  gameOverText.anchor.set(0.5);
+  gameOverText.x = app.screen.width / 2;
+  gameOverText.y = app.screen.height / 2;
+  gameOverText.visible = false;
+  uiContainer.addChild(gameOverText);
+  return gameOverText;
+}
+
+function createReadyText(uiContainer, app, lives) {
+  const readyText = new PIXI.Text({
+    text: `Last for 30 seconds\nLives left: ${lives}\nGood luck!`,
+    style: {
+      fontFamily: FONT_FAMILY,
+      fontSize: MESSAGE_FONT_SIZE,
+      fill: COLORS.TEXT,
+      align: "center",
+      lineHeight: MESSAGE_FONT_SIZE * 1.5,
+    },
+  });
+  readyText.anchor.set(0.5);
+  readyText.x = app.screen.width / 2;
+  readyText.y = app.screen.height / 2;
+  readyText.visible = false;
+  uiContainer.addChild(readyText);
+  return readyText;
+}
+
+async function createTitleScreenSprite(app, uiContainer) {
+  const titleTexture = await PIXI.Assets.load(titleScreenUrl);
+  const titleSprite = new PIXI.Sprite(titleTexture);
+
+  const scaleX = app.screen.width / titleTexture.width;
+  const scaleY = app.screen.height / titleTexture.height;
+  const scale = Math.max(scaleX, scaleY);
+  titleSprite.scale.set(scale);
+
+  titleSprite.x = (app.screen.width - titleSprite.width) / 2;
+  titleSprite.y = (app.screen.height - titleSprite.height) / 2;
+
+  uiContainer.addChild(titleSprite);
+  return titleSprite;
+}
+
+export async function createStageGraphics(app, remainingTime, lives) {
   const gameContainer = new PIXI.Container();
   app.stage.addChild(gameContainer);
 
@@ -110,6 +165,9 @@ export async function createStageGraphics(app, remainingTime) {
   const timerText = createTimerText(uiContainer, remainingTime);
   const deathText = createDeathText(uiContainer, app);
   const winText = createWinText(uiContainer, app);
+  const titleScreenSprite = await createTitleScreenSprite(app, uiContainer);
+  const readyText = createReadyText(uiContainer, app, lives);
+  const gameOverText = createGameOverText(uiContainer, app);
 
   return {
     gameContainer,
@@ -119,5 +177,8 @@ export async function createStageGraphics(app, remainingTime) {
     deathText,
     winText,
     safeCircleDebugGraphics,
+    titleScreenSprite,
+    readyText,
+    gameOverText,
   };
 }

@@ -32,7 +32,7 @@ export class Player extends Agent {
     this.createSprite();
   }
 
-  async loadAnimationData() {
+  loadAnimationData() {
     try {
       this.frames = framesData;
       this.animations = animationsData;

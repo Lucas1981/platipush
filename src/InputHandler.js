@@ -1,69 +1,50 @@
-/**
- * InputHandler class to manage keyboard input states
- */
 export class InputHandler {
-    constructor() {
-        this.keys = {
-            ArrowUp: false,
-            ArrowDown: false,
-            ArrowLeft: false,
-            ArrowRight: false
-        };
-        
-        this.setupEventListeners();
-    }
+  constructor() {
+    this.keys = {
+      ArrowUp: false,
+      ArrowDown: false,
+      ArrowLeft: false,
+      ArrowRight: false,
+      Enter: false,
+    };
+    this.handleKeyDown = (event) => {
+      if (event.code in this.keys) {
+        event.preventDefault();
+        this.keys[event.code] = true;
+      }
+    };
+    this.handleKeyUp = (event) => {
+      if (event.code in this.keys) {
+        event.preventDefault();
+        this.keys[event.code] = false;
+      }
+    };
+    this.setupEventListeners();
+  }
 
-    /**
-     * Set up keyboard event listeners
-     */
-    setupEventListeners() {
-        // Handle keydown events
-        window.addEventListener('keydown', (event) => {
-            if (event.code in this.keys) {
-                event.preventDefault(); // Prevent default browser behavior (scrolling)
-                this.keys[event.code] = true;
-            }
-        });
+  setupEventListeners() {
+    window.addEventListener("keydown", this.handleKeyDown);
+    window.addEventListener("keyup", this.handleKeyUp);
+  }
 
-        // Handle keyup events
-        window.addEventListener('keyup', (event) => {
-            if (event.code in this.keys) {
-                event.preventDefault();
-                this.keys[event.code] = false;
-            }
-        });
-    }
+  isKeyPressed(keyCode) {
+    return this.keys[keyCode] || false;
+  }
 
-    /**
-     * Check if a key is currently pressed
-     * @param {string} keyCode - The key code to check
-     * @returns {boolean} True if the key is pressed
-     */
-    isKeyPressed(keyCode) {
-        return this.keys[keyCode] || false;
-    }
+  getMovementVector() {
+    let x = 0;
+    let y = 0;
 
-    /**
-     * Get movement vector based on arrow key states
-     * @returns {Object} Object with x and y movement values (-1, 0, or 1)
-     */
-    getMovementVector() {
-        let x = 0;
-        let y = 0;
+    if (this.isKeyPressed("ArrowLeft")) x -= 1;
+    if (this.isKeyPressed("ArrowRight")) x += 1;
+    if (this.isKeyPressed("ArrowUp")) y -= 1;
+    if (this.isKeyPressed("ArrowDown")) y += 1;
 
-        if (this.isKeyPressed('ArrowLeft')) x -= 1;
-        if (this.isKeyPressed('ArrowRight')) x += 1;
-        if (this.isKeyPressed('ArrowUp')) y -= 1;
-        if (this.isKeyPressed('ArrowDown')) y += 1;
+    return { x, y };
+  }
 
-        return { x, y };
-    }
-
-    /**
-     * Clean up event listeners
-     */
-    destroy() {
-        window.removeEventListener('keydown', this.handleKeyDown);
-        window.removeEventListener('keyup', this.handleKeyUp);
-    }
+  destroy() {
+    window.removeEventListener("keydown", this.handleKeyDown);
+    window.removeEventListener("keyup", this.handleKeyUp);
+  }
 }

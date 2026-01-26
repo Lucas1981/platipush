@@ -1,8 +1,12 @@
-import { GameState as GameStateEnum, INITIAL_TIMER_MS } from "./constants.js";
+import {
+  GameState as GameStateEnum,
+  INITIAL_TIMER_MS,
+  INITIAL_LIVES,
+} from "./constants.js";
 
 export class GameState {
   constructor() {
-    this._state = GameStateEnum.RUNNING;
+    this._state = GameStateEnum.TITLE_SCREEN;
     this._gameStateStartTime = Date.now();
     this._agents = [];
     this._player = null;
@@ -18,6 +22,11 @@ export class GameState {
     this._playerInitialY = 0;
     this._deathText = null;
     this._winText = null;
+    this._inputHandler = null;
+    this._titleScreenSprite = null;
+    this._readyText = null;
+    this._gameOverText = null;
+    this._lives = INITIAL_LIVES;
   }
 
   get state() {
@@ -142,5 +151,45 @@ export class GameState {
 
   set winText(value) {
     this._winText = value;
+  }
+
+  get inputHandler() {
+    return this._inputHandler;
+  }
+
+  set inputHandler(value) {
+    this._inputHandler = value;
+  }
+
+  get titleScreenSprite() {
+    return this._titleScreenSprite;
+  }
+
+  set titleScreenSprite(value) {
+    this._titleScreenSprite = value;
+  }
+
+  get readyText() {
+    return this._readyText;
+  }
+
+  set readyText(value) {
+    this._readyText = value;
+  }
+
+  get lives() {
+    return this._lives;
+  }
+
+  set lives(value) {
+    this._lives = value;
+  }
+
+  get gameOverText() {
+    return this._gameOverText;
+  }
+
+  set gameOverText(value) {
+    this._gameOverText = value;
   }
 }
