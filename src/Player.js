@@ -5,10 +5,11 @@ import framesData from "./assets/frames.json";
 import animationsData from "./assets/animations.json";
 
 export class Player extends Agent {
-  constructor(x, y, spritesheet, inputHandler, screenWidth, screenHeight) {
+  constructor(x, y, spritesheet, inputHandler, screenWidth, screenHeight, sounds) {
     super(x, y);
     this.spritesheet = spritesheet;
     this.inputHandler = inputHandler;
+    this.sounds = sounds;
     this.sprite = null;
     this.container = new PIXI.Container();
     this.speed = 3;
@@ -17,6 +18,7 @@ export class Player extends Agent {
     this.spriteSize = 64;
 
     this.hitbox = new Hitbox(16, 16, 32, 32);
+    this.hit = false;
 
     this.direction = "DOWN";
     this.state = "STANDING";
@@ -157,6 +159,19 @@ export class Player extends Agent {
   draw(parentContainer) {
     if (!parentContainer.children.includes(this.container)) {
       parentContainer.addChild(this.container);
+    }
+  }
+
+  handleHit(wasHit) {
+    if (wasHit) {
+      if (!this.hit) {
+        this.hit = true;
+        if (this.sounds) {
+          this.sounds.enqueue("hit");
+        }
+      }
+    } else {
+      this.hit = false;
     }
   }
 

@@ -21,6 +21,12 @@ import {
   handleGameOverState,
 } from "./handlers.js";
 import { GameState } from "./GameState.js";
+import { Sounds } from "./Sounds.js";
+import readyStateSoundUrl from "./assets/sounds/ready-state.wav?url";
+import wonStateSoundUrl from "./assets/sounds/won-state.wav?url";
+import gameOverStateSoundUrl from "./assets/sounds/game-over-state.wav?url";
+import diedStateSoundUrl from "./assets/sounds/died-state.wav?url";
+import hitSoundUrl from "./assets/sounds/hit.wav?url";
 
 let app;
 let gameState = null;
@@ -49,6 +55,14 @@ async function main() {
 
   await loadFont();
 
+  const sounds = new Sounds();
+  await sounds.loadSound("ready-state", readyStateSoundUrl);
+  await sounds.loadSound("won-state", wonStateSoundUrl);
+  await sounds.loadSound("game-over-state", gameOverStateSoundUrl);
+  await sounds.loadSound("died-state", diedStateSoundUrl);
+  await sounds.loadSound("hit", hitSoundUrl);
+  gameState.sounds = sounds;
+
   const stageElements = await createStageGraphics(
     app,
     gameState.remainingTime,
@@ -74,6 +88,7 @@ async function main() {
     gameState.inputHandler,
     app.screen.width,
     app.screen.height,
+    sounds,
   );
 
   gameState.player = player;
@@ -124,6 +139,10 @@ function gameLoop(deltaTime) {
     case GameStateEnum.RUNNING:
       handleRunningState(gameState, currentTime, deltaTime);
       break;
+  }
+
+  if (gameState.sounds) {
+    gameState.sounds.playQueue();
   }
 }
 

@@ -9,9 +9,9 @@ export const GameState = {
 };
 
 export const ENEMY_SPAWN_INTERVAL = 100;
-export const DEAD_STATE_DURATION = 800;
+export const DEAD_STATE_DURATION = 1200;
 export const READY_STATE_DURATION = 1600;
-export const GAME_OVER_STATE_DURATION = 1600;
+export const GAME_OVER_STATE_DURATION = 2000;
 export const INITIAL_TIMER_MS = 30000;
 export const INITIAL_LIVES = 3;
 

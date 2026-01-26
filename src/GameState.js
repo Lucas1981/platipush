@@ -27,6 +27,7 @@ export class GameState {
     this._readyText = null;
     this._gameOverText = null;
     this._lives = INITIAL_LIVES;
+    this._sounds = null;
   }
 
   get state() {
@@ -191,5 +192,13 @@ export class GameState {
 
   set gameOverText(value) {
     this._gameOverText = value;
+  }
+
+  get sounds() {
+    return this._sounds;
+  }
+
+  set sounds(value) {
+    this._sounds = value;
   }
 }

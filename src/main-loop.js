@@ -35,6 +35,8 @@ function spawnEnemy(gameState, currentTime) {
 }
 
 function handleCollisions(gameState) {
+  let hasCollision = false;
+
   for (let i = 0; i < gameState.agents.length; i++) {
     const otherAgent = gameState.agents[i];
 
@@ -44,6 +46,7 @@ function handleCollisions(gameState) {
 
     if (gameState.player.intersects(otherAgent)) {
       if (otherAgent instanceof Enemy) {
+        hasCollision = true;
         const enemyDirection = otherAgent.getDirection();
         const enemyHitboxLeft = otherAgent.x + otherAgent.hitbox.x;
         const enemyHitboxRight = enemyHitboxLeft + otherAgent.hitbox.width;
@@ -61,6 +64,8 @@ function handleCollisions(gameState) {
       }
     }
   }
+
+  gameState.player.handleHit(hasCollision);
 }
 
 export function mainLoop({ deltaTime, currentTime, gameState }) {
