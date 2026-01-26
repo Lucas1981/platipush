@@ -10,11 +10,10 @@ So on the game: it's pretty simple. You're a Platipus and flying boxing gloves a
 
 Todo:
 
-- [ ] Add a title screen
-- [ ] Add levels
-- [ ] Add a "READY?" state
-- [ ] Add lives
-- [ ] Add a GAME OVER state
-- [ ] Add a "You beat the game!" state
+- [x] Add a title screen
+- [x] Add a "READY?" state
+- [x] Add lives
+- [x] Add a GAME OVER state
+- [x] Add a "You beat the game!" state
+- [x] Change the island and glove assets
 - [ ] Add sound effects
-- [ ] Maybe change the island and glove assets
