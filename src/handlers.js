@@ -178,9 +178,8 @@ function updateHitboxes(gameState) {
   }
 }
 
-export function handleRunningState(gameState, currentTime, deltaTime) {
+export function handleRunningState(gameState, currentTime) {
   const result = mainLoop({
-    deltaTime,
     currentTime,
     gameState,
   });

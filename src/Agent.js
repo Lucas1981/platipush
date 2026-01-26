@@ -10,11 +10,11 @@ export class Agent {
     return this.isActive;
   }
 
-  update() {
+  update(currentTime) {
     throw new Error("update() method must be implemented by subclasses");
   }
 
-  draw() {
+  draw(parentContainer) {
     throw new Error("draw() method must be implemented by subclasses");
   }
 

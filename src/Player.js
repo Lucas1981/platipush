@@ -4,6 +4,30 @@ import * as PIXI from "pixi.js";
 import framesData from "./assets/frames.json";
 import animationsData from "./assets/animations.json";
 
+const PLAYER_SPEED = 3;
+const PLAYER_SPRITE_SIZE = 64;
+const PLAYER_HITBOX_X = 16;
+const PLAYER_HITBOX_Y = 16;
+const PLAYER_HITBOX_WIDTH = 32;
+const PLAYER_HITBOX_HEIGHT = 32;
+const PLAYER_ANIMATION_SPEED_MS = 200;
+
+const DIRECTION_DOWN = "DOWN";
+const DIRECTION_UP = "UP";
+const DIRECTION_LEFT = "LEFT";
+const DIRECTION_RIGHT = "RIGHT";
+
+const PLAYER_STATE_STANDING = "STANDING";
+const PLAYER_STATE_WALKING = "WALKING";
+
+const ANIMATION_INDEX_DOWN = 0;
+const ANIMATION_INDEX_RIGHT = 2;
+const ANIMATION_INDEX_LEFT = 4;
+const ANIMATION_INDEX_UP = 6;
+const ANIMATION_WALKING_OFFSET = 1;
+
+const SOUND_NAME_HIT = "hit";
+
 export class Player extends Agent {
   constructor(
     x,
@@ -20,20 +44,25 @@ export class Player extends Agent {
     this.sounds = sounds;
     this.sprite = null;
     this.container = new PIXI.Container();
-    this.speed = 3;
+    this.speed = PLAYER_SPEED;
     this.screenWidth = screenWidth;
     this.screenHeight = screenHeight;
-    this.spriteSize = 64;
+    this.spriteSize = PLAYER_SPRITE_SIZE;
 
-    this.hitbox = new Hitbox(16, 16, 32, 32);
+    this.hitbox = new Hitbox(
+      PLAYER_HITBOX_X,
+      PLAYER_HITBOX_Y,
+      PLAYER_HITBOX_WIDTH,
+      PLAYER_HITBOX_HEIGHT,
+    );
     this.hit = false;
 
-    this.direction = "DOWN";
-    this.state = "STANDING";
+    this.direction = DIRECTION_DOWN;
+    this.state = PLAYER_STATE_STANDING;
     this.currentAnimation = null;
     this.currentFrameIndex = 0;
     this.lastAnimationUpdate = 0;
-    this.animationSpeed = 200;
+    this.animationSpeed = PLAYER_ANIMATION_SPEED_MS;
 
     this.frames = null;
     this.animations = null;
@@ -54,7 +83,12 @@ export class Player extends Agent {
         for (let j = 0; j < animation.length; j++) {
           const frameIndex = animation[j];
           const [x, y] = this.frames[frameIndex];
-          const texture = this.spritesheet.getSprite(x, y, 64, 64);
+          const texture = this.spritesheet.getSprite(
+            x,
+            y,
+            PLAYER_SPRITE_SIZE,
+            PLAYER_SPRITE_SIZE,
+          );
           if (texture) {
             textures.push(texture);
           }
@@ -70,13 +104,14 @@ export class Player extends Agent {
 
   getAnimationIndex() {
     const baseIndex = {
-      DOWN: 0,
-      RIGHT: 2,
-      LEFT: 4,
-      UP: 6,
+      [DIRECTION_DOWN]: ANIMATION_INDEX_DOWN,
+      [DIRECTION_RIGHT]: ANIMATION_INDEX_RIGHT,
+      [DIRECTION_LEFT]: ANIMATION_INDEX_LEFT,
+      [DIRECTION_UP]: ANIMATION_INDEX_UP,
     };
 
-    const offset = this.state === "WALKING" ? 1 : 0;
+    const offset =
+      this.state === PLAYER_STATE_WALKING ? ANIMATION_WALKING_OFFSET : 0;
     return baseIndex[this.direction] + offset;
   }
 
@@ -123,17 +158,17 @@ export class Player extends Agent {
       const movement = this.inputHandler.getMovementVector();
 
       if (movement.x > 0) {
-        this.direction = "RIGHT";
+        this.direction = DIRECTION_RIGHT;
       } else if (movement.x < 0) {
-        this.direction = "LEFT";
+        this.direction = DIRECTION_LEFT;
       } else if (movement.y > 0) {
-        this.direction = "DOWN";
+        this.direction = DIRECTION_DOWN;
       } else if (movement.y < 0) {
-        this.direction = "UP";
+        this.direction = DIRECTION_UP;
       }
 
       const isMoving = movement.x !== 0 || movement.y !== 0;
-      this.state = isMoving ? "WALKING" : "STANDING";
+      this.state = isMoving ? PLAYER_STATE_WALKING : PLAYER_STATE_STANDING;
 
       this.updateAnimation(currentTime);
 
@@ -178,7 +213,7 @@ export class Player extends Agent {
       if (!this.hit) {
         this.hit = true;
         if (this.sounds) {
-          this.sounds.enqueue("hit");
+          this.sounds.enqueue(SOUND_NAME_HIT);
         }
       }
     } else {
@@ -187,8 +222,8 @@ export class Player extends Agent {
   }
 
   resetState(currentTime) {
-    this.direction = "DOWN";
-    this.state = "STANDING";
+    this.direction = DIRECTION_DOWN;
+    this.state = PLAYER_STATE_STANDING;
     this.updateAnimation(currentTime);
   }
 
