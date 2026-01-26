@@ -47,6 +47,9 @@ export function handleWonState(gameState) {
     gameState.state = GameStateEnum.TITLE_SCREEN;
     gameState.gameStateStartTime = currentTime;
     gameState.inputHandler.clearKey("Enter");
+    if (gameState.sounds) {
+      gameState.sounds.enqueue("title-screen");
+    }
     if (gameState.winText) {
       gameState.winText.visible = false;
     }
@@ -86,6 +89,7 @@ export function handleReadyState(gameState, currentTime) {
   if (elapsed >= READY_STATE_DURATION) {
     gameState.state = GameStateEnum.RUNNING;
     gameState.gameStateStartTime = currentTime;
+    gameState.timerStartTime = currentTime;
     if (gameState.readyText) {
       gameState.readyText.visible = false;
     }
@@ -99,6 +103,9 @@ function resetGameplayState(gameState) {
     gameState.playerInitialX,
     gameState.playerInitialY,
   );
+  if (gameState.player) {
+    gameState.player.resetState();
+  }
   gameState.hitboxGraphicsMap.clear();
 }
 
@@ -116,6 +123,9 @@ export function handleGameOverState(gameState, currentTime) {
     resetGameState(gameState, currentTime);
     gameState.state = GameStateEnum.TITLE_SCREEN;
     gameState.gameStateStartTime = currentTime;
+    if (gameState.sounds) {
+      gameState.sounds.enqueue("title-screen");
+    }
     if (gameState.gameOverText) {
       gameState.gameOverText.visible = false;
     }

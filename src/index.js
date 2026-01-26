@@ -27,6 +27,7 @@ import wonStateSoundUrl from "./assets/sounds/won-state.wav?url";
 import gameOverStateSoundUrl from "./assets/sounds/game-over-state.wav?url";
 import diedStateSoundUrl from "./assets/sounds/died-state.wav?url";
 import hitSoundUrl from "./assets/sounds/hit.wav?url";
+import titleScreenSoundUrl from "./assets/sounds/title-screen.wav?url";
 
 let app;
 let gameState = null;
@@ -61,6 +62,7 @@ async function main() {
   await sounds.loadSound("game-over-state", gameOverStateSoundUrl);
   await sounds.loadSound("died-state", diedStateSoundUrl);
   await sounds.loadSound("hit", hitSoundUrl);
+  await sounds.loadSound("title-screen", titleScreenSoundUrl);
   gameState.sounds = sounds;
 
   const stageElements = await createStageGraphics(
@@ -101,6 +103,12 @@ async function main() {
   gameState.gameStateStartTime = currentTime;
   gameState.timerStartTime = currentTime;
 
+  if (gameState.sounds) {
+    gameState.sounds.enqueue("title-screen");
+  }
+
+  setupVisibilityHandlers(gameState);
+
   app.ticker.add((ticker) => {
     gameLoop(ticker.deltaTime);
   });
@@ -108,7 +116,33 @@ async function main() {
   console.log("Game initialized!");
 }
 
+function setupVisibilityHandlers(gameState) {
+  const handleVisibilityChange = () => {
+    if (document.hidden) {
+      if (!gameState.isPaused) {
+        gameState.isPaused = true;
+        gameState.pauseStartTime = Date.now();
+      }
+    } else {
+      if (gameState.isPaused) {
+        const pauseDuration = Date.now() - gameState.pauseStartTime;
+        gameState.timerStartTime += pauseDuration;
+        gameState.gameStateStartTime += pauseDuration;
+        gameState.lastEnemySpawnTime += pauseDuration;
+        gameState.isPaused = false;
+        gameState.pauseStartTime = 0;
+      }
+    }
+  };
+
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+}
+
 function gameLoop(deltaTime) {
+  if (gameState.isPaused) {
+    return;
+  }
+
   const currentTime = Date.now();
 
   switch (gameState.state) {

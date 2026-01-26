@@ -28,6 +28,8 @@ export class GameState {
     this._gameOverText = null;
     this._lives = INITIAL_LIVES;
     this._sounds = null;
+    this._isPaused = false;
+    this._pauseStartTime = 0;
   }
 
   get state() {
@@ -200,5 +202,21 @@ export class GameState {
 
   set sounds(value) {
     this._sounds = value;
+  }
+
+  get isPaused() {
+    return this._isPaused;
+  }
+
+  set isPaused(value) {
+    this._isPaused = value;
+  }
+
+  get pauseStartTime() {
+    return this._pauseStartTime;
+  }
+
+  set pauseStartTime(value) {
+    this._pauseStartTime = value;
   }
 }

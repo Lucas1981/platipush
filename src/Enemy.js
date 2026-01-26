@@ -1,12 +1,20 @@
 import { Agent } from "./Agent.js";
 import { Hitbox } from "./Hitbox.js";
 import * as PIXI from "pixi.js";
+import {
+  SAFE_CIRCLE_RADIUS,
+  SAFE_CIRCLE_CENTER_Y,
+  SPRITE_SIZE,
+} from "./constants.js";
 
 const SPEED = 5;
 
 export class Enemy extends Agent {
   constructor(spritesheet, screenWidth, screenHeight) {
-    const randomY = Math.random() * (screenHeight - 64);
+    const enemyHalfHeight = SPRITE_SIZE / 2;
+    const minY = SAFE_CIRCLE_CENTER_Y - SAFE_CIRCLE_RADIUS + enemyHalfHeight;
+    const maxY = SAFE_CIRCLE_CENTER_Y + SAFE_CIRCLE_RADIUS - enemyHalfHeight;
+    const randomY = minY + Math.random() * (maxY - minY);
 
     const direction = Math.random() < 0.5 ? 1 : -1;
 

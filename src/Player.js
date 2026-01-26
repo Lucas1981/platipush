@@ -175,6 +175,12 @@ export class Player extends Agent {
     }
   }
 
+  resetState() {
+    this.direction = "DOWN";
+    this.state = "STANDING";
+    this.updateAnimation();
+  }
+
   destroy() {
     if (this.container.parent) {
       this.container.parent.removeChild(this.container);
