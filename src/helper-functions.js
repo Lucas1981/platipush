@@ -1,14 +1,6 @@
 import * as PIXI from "pixi.js";
 import { Enemy } from "./Enemy.js";
-import {
-  SAFE_CIRCLE_CENTER_X,
-  SAFE_CIRCLE_CENTER_Y,
-  SAFE_CIRCLE_RADIUS,
-  PLAYER_RADIUS,
-  COLORS,
-  DRAW_HITBOX,
-  FONT_FAMILY,
-} from "./constants.js";
+import { COLORS, DRAW_HITBOX, FONT_FAMILY } from "./constants.js";
 import fontUrl from "./assets/PressStart2P-Regular.ttf?url";
 
 export function formatTime(ms) {
@@ -22,21 +14,6 @@ export function formatTime(ms) {
   const mmm = String(milliseconds).padStart(3, "0");
 
   return `${mm}:${ss}:${mmm}`;
-}
-
-export function isPlayerInsideSafeCircle(player) {
-  if (!player || !player.hitbox) {
-    return false;
-  }
-
-  const playerCenterX = player.x + player.hitbox.x + player.hitbox.width / 2;
-  const playerCenterY = player.y + player.hitbox.y + player.hitbox.height / 2;
-
-  const dx = playerCenterX - SAFE_CIRCLE_CENTER_X;
-  const dy = playerCenterY - SAFE_CIRCLE_CENTER_Y;
-  const distance = Math.sqrt(dx * dx + dy * dy);
-
-  return distance + PLAYER_RADIUS <= SAFE_CIRCLE_RADIUS;
 }
 
 export function clearEnemies(agents) {
@@ -100,5 +77,12 @@ export function removeHitbox(agent, hitboxGraphicsMap) {
   if (hitboxGraphics) {
     hitboxGraphics.destroy();
     hitboxGraphicsMap.delete(agent);
+  }
+}
+
+export function hideLoadingScreen() {
+  const loadingScreen = document.getElementById("loading-screen");
+  if (loadingScreen) {
+    loadingScreen.style.display = "none";
   }
 }

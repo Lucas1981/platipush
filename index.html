@@ -29,12 +29,30 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        position: relative;
+      }
+
+      #loading-screen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 802px;
+        height: 602px;
+        background-color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "PressStart2P", monospace;
+        font-size: 24px;
+        color: white;
+        z-index: 1000;
       }
     </style>
   </head>
   <body>
     <div id="game-container">
-      <canvas id="game-canvas"></canvas>
+      <canvas id="game-canvas" width="800" height="600"></canvas>
+      <div id="loading-screen">Loading...</div>
     </div>
 
     <script type="module" src="src/index.js"></script>

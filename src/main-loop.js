@@ -3,8 +3,27 @@ import {
   GameState as GameStateEnum,
   ENEMY_SPAWN_INTERVAL,
   INITIAL_TIMER_MS,
+  SAFE_CIRCLE_CENTER_X,
+  SAFE_CIRCLE_CENTER_Y,
+  SAFE_CIRCLE_RADIUS,
+  PLAYER_RADIUS,
 } from "./constants.js";
-import { formatTime, isPlayerInsideSafeCircle } from "./helper-functions.js";
+import { formatTime } from "./helper-functions.js";
+
+export function isPlayerInsideSafeCircle(player) {
+  if (!player || !player.hitbox) {
+    return false;
+  }
+
+  const playerCenterX = player.x + player.hitbox.x + player.hitbox.width / 2;
+  const playerCenterY = player.y + player.hitbox.y + player.hitbox.height / 2;
+
+  const dx = playerCenterX - SAFE_CIRCLE_CENTER_X;
+  const dy = playerCenterY - SAFE_CIRCLE_CENTER_Y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  return distance + PLAYER_RADIUS <= SAFE_CIRCLE_RADIUS;
+}
 
 function updateTimer(gameState, currentTime) {
   const timerElapsed = currentTime - gameState.timerStartTime;

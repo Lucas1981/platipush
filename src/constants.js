@@ -18,7 +18,7 @@ export const INITIAL_LIVES = 3;
 export const SCREEN_WIDTH = 800;
 export const SCREEN_HEIGHT = 600;
 
-export const SAFE_CIRCLE_RADIUS = 230;
+export const SAFE_CIRCLE_RADIUS = 250;
 export const SAFE_CIRCLE_CENTER_X = 400;
 export const SAFE_CIRCLE_CENTER_Y = 300;
 
