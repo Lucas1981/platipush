@@ -15,6 +15,23 @@ import { formatTime } from "./helper-functions.js";
 import islandUrl from "./assets/island.jpeg?url";
 import titleScreenUrl from "./assets/title-screen.png?url";
 
+const BASE_TEXT_STYLE = {
+  fontFamily: FONT_FAMILY,
+  fill: COLORS.TEXT,
+  align: "center",
+  fontSize: MESSAGE_FONT_SIZE,
+};
+
+function createCenteredText(params, app, uiContainer) {
+  const instance = new PIXI.Text(params);
+  instance.anchor.set(0.5);
+  instance.x = app.screen.width / 2;
+  instance.y = app.screen.height / 2;
+  instance.visible = false;
+  uiContainer.addChild(instance);
+  return instance;
+}
+
 async function createBackgroundSprite(app, gameContainer) {
   const backgroundTexture = await PIXI.Assets.load(islandUrl);
   const backgroundSprite = new PIXI.Sprite(backgroundTexture);
@@ -52,9 +69,9 @@ function createTimerText(uiContainer, remainingTime) {
   const timerText = new PIXI.Text({
     text: `Time to last: ${formatTime(remainingTime)}`,
     style: {
-      fontFamily: FONT_FAMILY,
+      ...BASE_TEXT_STYLE,
       fontSize: TIMER_FONT_SIZE,
-      fill: COLORS.TEXT,
+      align: "left",
     },
   });
   timerText.x = TEXT_PADDING_X;
@@ -64,76 +81,56 @@ function createTimerText(uiContainer, remainingTime) {
 }
 
 function createDeathText(uiContainer, app) {
-  const deathText = new PIXI.Text({
-    text: "You died",
-    style: {
-      fontFamily: FONT_FAMILY,
-      fontSize: MESSAGE_FONT_SIZE,
-      fill: COLORS.TEXT,
-      align: "center",
+  const deathText = createCenteredText(
+    {
+      text: "You died",
+      style: BASE_TEXT_STYLE,
     },
-  });
-  deathText.anchor.set(0.5);
-  deathText.x = app.screen.width / 2;
-  deathText.y = app.screen.height / 2;
-  deathText.visible = false;
-  uiContainer.addChild(deathText);
+    app,
+    uiContainer,
+  );
   return deathText;
 }
 
 function createWinText(uiContainer, app) {
-  const winText = new PIXI.Text({
-    text: "You won!\nPush enter to return",
-    style: {
-      fontFamily: FONT_FAMILY,
-      fontSize: MESSAGE_FONT_SIZE,
-      fill: COLORS.TEXT,
-      align: "center",
-      lineHeight: MESSAGE_FONT_SIZE * 1.5,
+  const winText = createCenteredText(
+    {
+      text: "You won!\nPush enter to return",
+      style: {
+        ...BASE_TEXT_STYLE,
+        lineHeight: MESSAGE_FONT_SIZE * 1.5,
+      },
     },
-  });
-  winText.anchor.set(0.5);
-  winText.x = app.screen.width / 2;
-  winText.y = app.screen.height / 2;
-  winText.visible = false;
-  uiContainer.addChild(winText);
+    app,
+    uiContainer,
+  );
   return winText;
 }
 
 function createGameOverText(uiContainer, app) {
-  const gameOverText = new PIXI.Text({
-    text: "Game Over",
-    style: {
-      fontFamily: FONT_FAMILY,
-      fontSize: MESSAGE_FONT_SIZE,
-      fill: COLORS.TEXT,
-      align: "center",
+  const gameOverText = createCenteredText(
+    {
+      text: "Game Over",
+      style: BASE_TEXT_STYLE,
     },
-  });
-  gameOverText.anchor.set(0.5);
-  gameOverText.x = app.screen.width / 2;
-  gameOverText.y = app.screen.height / 2;
-  gameOverText.visible = false;
-  uiContainer.addChild(gameOverText);
+    app,
+    uiContainer,
+  );
   return gameOverText;
 }
 
 function createReadyText(uiContainer, app, lives) {
-  const readyText = new PIXI.Text({
-    text: `Last for 30 seconds\nLives left: ${lives}\nGood luck!`,
-    style: {
-      fontFamily: FONT_FAMILY,
-      fontSize: MESSAGE_FONT_SIZE,
-      fill: COLORS.TEXT,
-      align: "center",
-      lineHeight: MESSAGE_FONT_SIZE * 1.5,
+  const readyText = createCenteredText(
+    {
+      text: `Last for 30 seconds\nLives left: ${lives}\nGood luck!`,
+      style: {
+        ...BASE_TEXT_STYLE,
+        lineHeight: MESSAGE_FONT_SIZE * 1.5,
+      },
     },
-  });
-  readyText.anchor.set(0.5);
-  readyText.x = app.screen.width / 2;
-  readyText.y = app.screen.height / 2;
-  readyText.visible = false;
-  uiContainer.addChild(readyText);
+    app,
+    uiContainer,
+  );
   return readyText;
 }
 
