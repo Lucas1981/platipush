@@ -6,11 +6,8 @@ import {
   INITIAL_TIMER_MS,
   INITIAL_LIVES,
 } from "./constants.js";
-import {
-  clearEnemies,
-  drawHitbox,
-  removeHitbox,
-} from "./helper-functions.js";
+import { drawHitbox, removeHitbox } from "./debug.js";
+import { Enemy } from "./Enemy.js";
 import { mainLoop } from "./main-loop.js";
 
 function handleEndState(gameState, currentTime, textProperty) {
@@ -77,6 +74,16 @@ function resetGameplayState(gameState, currentTime) {
   );
   gameState.player.resetState(currentTime);
   gameState.hitboxGraphicsMap.clear();
+}
+
+function clearEnemies(agents) {
+  for (let i = agents.length - 1; i >= 0; i--) {
+    if (agents[i] instanceof Enemy) {
+      agents[i].destroy();
+      agents.splice(i, 1);
+    }
+  }
+  return agents;
 }
 
 function resetGameState(gameState, currentTime) {

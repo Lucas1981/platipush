@@ -11,7 +11,7 @@ import {
   FONT_FAMILY,
   DRAW_HITBOX,
 } from "./constants.js";
-import { formatTime } from "./helper-functions.js";
+import { formatTime } from "./utils.js";
 import islandUrl from "./assets/island.jpeg?url";
 import titleScreenUrl from "./assets/title-screen.png?url";
 

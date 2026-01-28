@@ -4,10 +4,9 @@ import { Animations } from "./Animations.js";
 import { Spritesheet } from "./Spritesheet.js";
 import { InputHandler } from "./InputHandler.js";
 import spritesheetUrl from "./assets/spritesheet.png?url";
-import { SCREEN_WIDTH, SCREEN_HEIGHT, COLORS } from "./constants.js";
-import { loadFont } from "./helper-functions.js";
+import { SCREEN_WIDTH, SCREEN_HEIGHT, COLORS, FONT_FAMILY } from "./constants.js";
 import { createStageGraphics } from "./stage-graphics.js";
-import { hideLoadingScreen } from "./helper-functions.js";
+import { hideLoadingScreen } from "./utils.js";
 import { GameState } from "./GameState.js";
 import { Sounds } from "./Sounds.js";
 import readyStateSoundUrl from "./assets/sounds/ready-state.wav?url";
@@ -39,6 +38,19 @@ function setupVisibilityHandlers(gameState) {
   };
 
   document.addEventListener("visibilitychange", handleVisibilityChange);
+}
+
+async function loadFont() {
+  try {
+    const font = new FontFace(
+      FONT_FAMILY,
+      `url(${new URL("./assets/PressStart2P-Regular.ttf", import.meta.url).href})`,
+    );
+    await font.load();
+    document.fonts.add(font);
+  } catch (error) {
+    console.warn("Could not load font:", error);
+  }
 }
 
 export async function init() {

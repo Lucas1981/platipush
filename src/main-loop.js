@@ -8,7 +8,7 @@ import {
   SAFE_CIRCLE_RADIUS,
   PLAYER_RADIUS,
 } from "./constants.js";
-import { formatTime } from "./helper-functions.js";
+import { formatTime } from "./utils.js";
 
 export function isPlayerInsideSafeCircle(player) {
   if (!player || !player.hitbox) {
