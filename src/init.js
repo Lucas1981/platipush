@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
 import { Player } from "./Player.js";
+import { Animations } from "./Animations.js";
 import { Spritesheet } from "./Spritesheet.js";
 import { InputHandler } from "./InputHandler.js";
 import spritesheetUrl from "./assets/spritesheet.png?url";
@@ -66,6 +67,8 @@ export async function init() {
   await spritesheet.load(spritesheetUrl);
   gameState.spritesheet = spritesheet;
 
+  const animations = new Animations(spritesheet);
+
   const sounds = new Sounds();
   await Promise.all([
     sounds.loadSound("ready-state", readyStateSoundUrl),
@@ -99,11 +102,11 @@ export async function init() {
   const player = new Player(
     gameState.playerInitialX,
     gameState.playerInitialY,
-    spritesheet,
     gameState.inputHandler,
     app.screen.width,
     app.screen.height,
     sounds,
+    animations,
   );
 
   gameState.player = player;
