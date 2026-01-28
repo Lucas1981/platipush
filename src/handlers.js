@@ -19,20 +19,14 @@ function handleEndState(gameState, currentTime, textProperty) {
   if (elapsed >= DEAD_STATE_DURATION) {
     if (gameState.lives === 0) {
       gameState.state = GameStateEnum.GAME_OVER;
-      if (gameState.gameOverText) {
-        gameState.gameOverText.visible = true;
-      }
-      if (gameState.sounds) {
-        gameState.sounds.enqueue("game-over-state");
-      }
+      gameState.gameOverText.visible = true;
+      gameState.sounds.enqueue("game-over-state");
     } else {
       gameState.state = GameStateEnum.RESET;
     }
     gameState.gameStateStartTime = currentTime;
     const text = gameState[textProperty];
-    if (text) {
-      text.visible = false;
-    }
+    text.visible = false;
   }
 }
 
@@ -46,18 +40,10 @@ export function handleWonState(gameState, currentTime) {
     gameState.state = GameStateEnum.TITLE_SCREEN;
     gameState.gameStateStartTime = currentTime;
     gameState.inputHandler.clearKey("Enter");
-    if (gameState.sounds) {
-      gameState.sounds.enqueue("title-screen");
-    }
-    if (gameState.winText) {
-      gameState.winText.visible = false;
-    }
-    if (gameState.gameContainer) {
-      gameState.gameContainer.visible = false;
-    }
-    if (gameState.titleScreenSprite) {
-      gameState.titleScreenSprite.visible = true;
-    }
+    gameState.sounds.enqueue("title-screen");
+    gameState.winText.visible = false;
+    gameState.gameContainer.visible = false;
+    gameState.titleScreenSprite.visible = true;
   }
 }
 
@@ -66,19 +52,11 @@ export function handleTitleScreenState(gameState, currentTime) {
     resetGameState(gameState, currentTime);
     gameState.state = GameStateEnum.READY;
     gameState.gameStateStartTime = currentTime;
-    if (gameState.sounds) {
-      gameState.sounds.enqueue("ready-state");
-    }
-    if (gameState.titleScreenSprite) {
-      gameState.titleScreenSprite.visible = false;
-    }
-    if (gameState.gameContainer) {
-      gameState.gameContainer.visible = true;
-    }
-    if (gameState.readyText) {
-      gameState.readyText.text = `Last for 30 seconds\nLives left: ${gameState.lives}\nGood luck!`;
-      gameState.readyText.visible = true;
-    }
+    gameState.sounds.enqueue("ready-state");
+    gameState.titleScreenSprite.visible = false;
+    gameState.gameContainer.visible = true;
+    gameState.readyText.text = `Last for 30 seconds\nLives left: ${gameState.lives}\nGood luck!`;
+    gameState.readyText.visible = true;
   }
 }
 
@@ -88,9 +66,7 @@ export function handleReadyState(gameState, currentTime) {
     gameState.state = GameStateEnum.RUNNING;
     gameState.gameStateStartTime = currentTime;
     gameState.timerStartTime = currentTime;
-    if (gameState.readyText) {
-      gameState.readyText.visible = false;
-    }
+    gameState.readyText.visible = false;
   }
 }
 
@@ -121,45 +97,27 @@ export function handleGameOverState(gameState, currentTime) {
     resetGameState(gameState, currentTime);
     gameState.state = GameStateEnum.TITLE_SCREEN;
     gameState.gameStateStartTime = currentTime;
-    if (gameState.sounds) {
-      gameState.sounds.enqueue("title-screen");
-    }
-    if (gameState.gameOverText) {
-      gameState.gameOverText.visible = false;
-    }
-    if (gameState.gameContainer) {
-      gameState.gameContainer.visible = false;
-    }
-    if (gameState.titleScreenSprite) {
-      gameState.titleScreenSprite.visible = true;
-    }
-    if (gameState.deathText) {
-      gameState.deathText.visible = false;
-    }
-    if (gameState.winText) {
-      gameState.winText.visible = false;
-    }
-    if (gameState.readyText) {
-      gameState.readyText.visible = false;
-    }
+    gameState.sounds.enqueue("title-screen");
+    gameState.gameOverText.visible = false;
+    gameState.gameContainer.visible = false;
+    gameState.titleScreenSprite.visible = true;
+    gameState.deathText.visible = false;
+    gameState.winText.visible = false;
+    gameState.readyText.visible = false;
   }
 }
 
 export function handleResetState(gameState, currentTime) {
-  resetGameplayState(gameState);
+  resetGameplayState(gameState, currentTime);
 
   gameState.state = GameStateEnum.READY;
   gameState.gameStateStartTime = currentTime;
   gameState.timerStartTime = currentTime;
   gameState.remainingTime = INITIAL_TIMER_MS;
   gameState.lastEnemySpawnTime = currentTime;
-  if (gameState.sounds) {
-    gameState.sounds.enqueue("ready-state");
-  }
-  if (gameState.readyText) {
-    gameState.readyText.text = `Last for 30 seconds\nLives left: ${gameState.lives}\nGood luck!`;
-    gameState.readyText.visible = true;
-  }
+  gameState.sounds.enqueue("ready-state");
+  gameState.readyText.text = `Last for 30 seconds\nLives left: ${gameState.lives}\nGood luck!`;
+  gameState.readyText.visible = true;
 }
 
 function updateHitboxes(gameState) {
@@ -192,15 +150,11 @@ export function handleRunningState(gameState, currentTime) {
 
     if (result.stateChange.newState === GameStateEnum.WON) {
       gameState.winText.visible = true;
-      if (gameState.sounds) {
-        gameState.sounds.enqueue("won-state");
-      }
+      gameState.sounds.enqueue("won-state");
     } else if (result.stateChange.newState === GameStateEnum.DEAD) {
       gameState.lives -= 1;
       gameState.deathText.visible = true;
-      if (gameState.sounds) {
-        gameState.sounds.enqueue("died-state");
-      }
+      gameState.sounds.enqueue("died-state");
     }
 
     if (result.stateChange.resetTimer) {
