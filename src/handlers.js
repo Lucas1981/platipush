@@ -8,7 +8,6 @@ import {
 } from "./constants.js";
 import {
   clearEnemies,
-  resetPlayer,
   drawHitbox,
   removeHitbox,
 } from "./helper-functions.js";
@@ -72,14 +71,11 @@ export function handleReadyState(gameState, currentTime) {
 
 function resetGameplayState(gameState, currentTime) {
   gameState.agents = clearEnemies(gameState.agents);
-  resetPlayer(
-    gameState.player,
+  gameState.player.resetPosition(
     gameState.playerInitialX,
     gameState.playerInitialY,
   );
-  if (gameState.player) {
-    gameState.player.resetState(currentTime);
-  }
+  gameState.player.resetState(currentTime);
   gameState.hitboxGraphicsMap.clear();
 }
 

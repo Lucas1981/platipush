@@ -67,6 +67,12 @@ export class Player extends Agent {
     }
   }
 
+  resetPosition(initialX, initialY) {
+    this.x = initialX;
+    this.y = initialY;
+    this.updateSpritePosition();
+  }
+
   update(currentTime) {
     if (this.inputHandler) {
       const movement = this.inputHandler.getMovementVector();

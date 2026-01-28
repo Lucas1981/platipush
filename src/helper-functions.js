@@ -26,14 +26,6 @@ export function clearEnemies(agents) {
   return agents;
 }
 
-export function resetPlayer(player, initialX, initialY) {
-  if (player) {
-    player.x = initialX;
-    player.y = initialY;
-    player.updateSpritePosition();
-  }
-}
-
 export async function loadFont() {
   try {
     const font = new FontFace(FONT_FAMILY, `url(${fontUrl})`);
